@@ -1,0 +1,14 @@
+bibentry(bibtype = "Article",
+  title        = "Posterior predictive design for phase I clinical trials.",
+  author       = c(person(given = "Chenqi",
+                          family = "Fu"),
+                   person(given = "Shouhao",
+                          family = "Zhou",
+                          email = "shouhao.zhou@psu.edu")),
+  
+  journal      = "Manuscript in preparation",
+  year         = "2020",
+
+  header       = "To cite PoPdesign in publications use:"
+)
+

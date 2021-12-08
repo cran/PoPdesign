@@ -1,0 +1,15 @@
+---
+title: "PoP Flowchart Render"
+author: "Xinying Fang"
+date: "11/10/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+knitr::include_graphics("/Users/rrrrrita/Documents/GitHub/pop/inst/Flowchart/pop_Flowchart.png")
+```
+
