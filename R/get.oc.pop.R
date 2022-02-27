@@ -48,7 +48,7 @@
 #'
 #'        (8) risk of overdosing 80\% or more of patients (\code{$risk.over})
 #'
-#'
+#' @references Brunk, H., Barlow, R. E., Bartholomew, D. J. & Bremner, J. M (1972, ISBN-13: 978-0471049708).
 #'
 #' @examples
 #'

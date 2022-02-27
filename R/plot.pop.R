@@ -40,7 +40,8 @@ plot.pop<- function (x, ...){
 
   ## select.mtd.pdf -----
   if (!is.null(x$MTD)) {
-    plot(x$p_est, ylab="DLT rate", xlab="Dose level",pch=20,xaxt = "n")
+    plot(x$p_est, ylab="DLT rate", xlab="Dose level",pch=20,xaxt = "n",
+         col=ifelse(x$p_est==x$p_est[x$MTD], "red", "black"))
     axis(1, at=1:length(x$p_est))
     abline(h=x$target, col="Red", lty=3)
   }

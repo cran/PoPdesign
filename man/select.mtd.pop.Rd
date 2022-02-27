@@ -24,10 +24,13 @@ Select the maximum tolerated dose (MTD) when the single-agent trial is completed
 \examples{
 
 ### select the MTD for PoP trial
-n <- c(3, 3, 15, 9, 0)
-y <- c(0, 0, 4, 4, 0)
+n <- c(4, 4, 16, 8, 0)
+y <- c(0, 0, 5, 5, 0)
 selmtd <- select.mtd.pop(target=0.3,n.pts=n, n.tox=y)
 summary(selmtd)
 plot(selmtd)
 
+}
+\references{
+Brunk, H., Barlow, R. E., Bartholomew, D. J. & Bremner, J. M (1972, ISBN-13: 978-0471049708).
 }
