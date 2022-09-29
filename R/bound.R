@@ -14,7 +14,7 @@ bound <- function(target,n.cohort,cohortsize,cutoff,K,cutoff_e=exp(-1)){
   for(i in 1:n.cohort){
     t <- i*cohortsize
     x <- 0:(i*cohortsize)
-    y <- lapply(x,prbf01,n=(i*cohortsize),target=target,cutoff=cutoff)
+    y <- lapply(x,prbf01,n=(i*cohortsize),target=target)
     a <- 0
 
     if (cutoff){cutoff2 <- cut5(t=t,target=target, n=n.cohort*cohortsize, K=K)}

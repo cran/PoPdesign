@@ -97,14 +97,14 @@ get.boundary.pop = function(target,n.cohort,cohortsize,cutoff=TRUE,K=4,cutoff_e=
                              bound(target=target,n.cohort=total,cohortsize = 1,cutoff=cutoff,K=K,cutoff_e=cutoff_e))
 
   rownames(out.boundary) <- c("Number of patients treated",
-                              "Escalation if # of DLT (C1) <=","Deescalation if # of DLT (C2) >=",
-                              "Subtherapeutic exclusion if # of DLT (E1) <=",
-                              "Overly toxic exclusion if # of DLT (E2) >=")
+                              "Escalation if # of DLT (U1) <=","Deescalation if # of DLT (U2) >=",
+                              "Subtherapeutic exclusion if # of DLT (V1) <=",
+                              "Overly toxic exclusion if # of DLT (V2) >=")
 
   rownames(out.full.boundary) <- c("Number of patients treated",
-                                   "Escalation if # of DLT (C1) <=","Deescalation if # of DLT (C2) >=",
-                              "Subtherapeutic exclusion if # of DLT (E1) <=",
-                              "Overly toxic exclusion if # of DLT (E2) >=")
+                                   "Escalation if # of DLT (U1) <=","Deescalation if # of DLT (U2) >=",
+                              "Subtherapeutic exclusion if # of DLT (V1) <=",
+                              "Overly toxic exclusion if # of DLT (V2) >=")
 
   out = list(out.boundary = out.boundary,
              out.full.boundary = out.full.boundary)

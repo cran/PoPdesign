@@ -2,7 +2,7 @@
 title: "PoP Design"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{my-vignette}
+  %\VignetteIndexEntry{PoPdesign-vignette}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -16,49 +16,84 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
-The primary goal of phase I clinical trials is to find the maximum tolerated dose (MTD). To reach this objective, we introduce a new design for phase I clinical trials, the posterior predictive (PoP) design. The PoP design is an innovative model-assisted design that is easy to implement in a manner similar to the traditional 3+3 design, as its decision rules can be pre-tabulated prior to the onset of trial, but is of more flexibility of selecting diverse target toxicity rates and cohort sizes. Moreover, it has satisfactory performance of selecting the true MTD to other more complicated model-based designs. We highlight the desirable properties of the PoP design, such as coherence and consistency. We conduct a numerical simulation study to compare the PoP design to the Bayesian optimal interval design. The results illustrate better performance of the PoP design, with respect to competitive average probabilities of choosing the MTD and lower risk treating patients at overly toxic doses.
+Model-assisted designs are cutting-edge adaptive designs to find the maximum tolerated dose (MTD) in phase I clinical trials. They enjoy superior performance comparable to more complicated, model-based adaptive designs, but with their decision rule pretabulated, they can be implemented as simply as the conventional algorithmic designs. In this work, we propose the posterior predictive (PoP) design, a novel model-assisted design to exploit Bayesian interval hypothesis testing, and develop a freely accessible R package **PoPdesign** to better facilitate the trial design application. Our work moves beyond the previous model-assisted designs by theoretically achieving consistency in selecting the true MTD and global optimality in dose transition. The simulation studies demonstrate that the PoP design can achieve significant improvement in operating characteristics to identify the MTD. Therefore, the PoP design provides a useful and convenient upgrade to the prevalent model-assisted designs.
 
 ## Methods
 
 We assume that there are $J$ pre-specified dose levels of the drug of interest. Let $d_1,d_2,\ldots,d_J$ denote these dose levels. The dose-limiting toxicity (DLT) is assessed as a binary outcome, experiencing toxicity or not. The true dose toxicity is monotonically increasing as the dose level increases. Let $\phi$ be the target toxicity rate and $\pi_j$ be the true dose-toxicity of dose level $d_j$, for $j=1,2,\ldots,J$.
 
 We formulate our hypothesis as:
+
 $$
 H_{0j}: \pi_j=\phi \\
 H_{1j}: \pi_j\ne\phi
 $$
 $H_{0j}$ indicates that $d_j$ is the desired MTD so that we should stay; $H_{1j}$ reflects the current dose is either below or above the MTD so that we should transit to a lower or upper dose level. If the observed toxicity rate is above the target toxicity rate $\phi$, we de-escalate the dose; if the observed toxicity rate is below $\phi$, we escalate the dose.
 
-With the hypothesis, the predictive Bayes factor comparing $H_{0j}$ and $H_{1j}$ is given by
+Instead of the Bayes factor, we use the predictive Bayes factor (PrBF) (Zhou, 2011) to conduct the hypothesis testing. Denote $M_k (\mathbf{y}),k=0,1$ the posterior model under hypotheses $H_k$ with the parameter updated in the presence of observed data $\mathbf{y}=\{y_1,y_2,\cdots,y_n\}$. Denote $\theta_k$ the parameters considered in the model $M_k$ and specify a prior distribution as $\pi(\theta_k)$. The PrBF comparing $H_0$ to $H_1$ is defined as:
+
+$$
+\text{PrBF}_{1,2}=\frac{\prod_i P(y_i|M_1(\mathbf{y}))}{\prod_i P(y_i|M_2(\mathbf{y}))}\frac{\exp{(n\cdot \hat{b}_1})}{\exp{(n\cdot\hat{b}_2)}}
+$$
+where the estimator $\hat{b}_k$ corrects the over-estimation bias in the empirical log posterior predictive distribution, owing to the 'double use' of observed data in both model fitting and evaluation. 
+
+The PrBF has attractive features going beyond Bayes factors by employing the posterior predictive distribution in model assessment. It significantly reduces the sensitivity to the choice of the prior distribution and avoids the degeneration of the integrated likelihood underlying Lindley's paradox.
+
+We then use the PrBF to perform the hypothesis testing of the PoP design, We denote $y_j$ the sum of DLTs among $n_j$ subjects that received dose $d_j$, for $j=1,2,\dots,J$, following a binomial distribution:
+
+$$
+y_j\sim\text{Bin}(n_j,\pi_j)
+$$
+
+The predictive Bayes factor comparing $H_{0j}$ and $H_{1j}$ is given by:
+
 $$
 PrBF_{0,1}=\frac{\phi^{y_i}(1-\phi)^{n_j-y_j}B(y_j+1,n_j-y_j+1)^{n_j}exp(1)}{B(y_j+2,n_j-y_j+1)^{y_j}B(y_j+1,n_j-y_j+2)^{n_j-y_j}}
-
 $$
-where $x_j$ is the toxicity response of the ith subject among $n_j$ subjects that received dose $d_j$, for $j=1,2,\ldots,J$.
+where $B(a,b)$ is the beta function. $x_j$ is the toxicity response of the ith subject among $n_j$ subjects that received dose $d_j$, for $j=1,2,\ldots,J$. According to the calibration of the PrBF, the smaller the value of $\text{PrBF}_{0,1}$ ($<1$), the stronger the evidence favors $H_{1j}$ for dose transition, against $H_{0j}$ for dose retention. 
 
-$y_j$ denotes the sum of toxicity response. We assume that
-$$
-y_j \sim Bin(n_j,\pi_j)
-$$
+### Dose transition
 
-According to the calibration of the PrBF, a decision rule based on $PrBF_{0,1}$ is:
-1. If $PrBF_{0,1}>C(n_j)$, the evidence is in favor of $H_{0j}$ and we need to retain the current dose;
-2. Otherwise, we assign the next cohort of patients to an adjacent dose according to the observed DLT $\hat{\pi}_j = y_j/n_j$, such as: 
+If $\text{PrBF}_{0,1}<C(\phi,n_j)$, the evidence is in favor of $H_{1j}$. We are going to transit the current dose. We assign the next cohort of patients to an adjacent dose according to $y_j$, such as
 
-(a) If $\hat{\pi}_j < \phi$, we escalate the dose; 
+* If $y_j<\phi \cdot n_j$, we escalate the dose;
 
-(b) If $\hat{\pi}_j > \phi$, we de-escalate the dose.
+* If $y_j>\phi \cdot  n_j$, we deescalate the dose.
 
-For patient safety and trial efficiency, the PoP design employs a dose exclusion rule. On the one hand, if the PrBF based on the observed DLT indicates a dose is above the MTD with a certain evidence, we exclude the current dose and doses above to avoid treating patients at an overly toxic dose; on the other hand, if the PrBF implies that a dose is substantially below the MTD, we eliminate the current dose and doses below to prevent wasting patients at a subtherapeutic dose. Such a dose exclusion rule is as follow:
+Otherwise, we retain the current dose.
 
-If $PrBF_{0,1}<E(n_j)$, the evidence is in favor of $H_{1j}$ and:
+The threshold $C(\phi, n_j)$ describes the tolerance in strength of evidence for dose transition. 
+Mathematically, it can be intrinsically determined by the loss function in making incorrect decisions. 
 
-1. If $\hat{\pi}_j < \phi$, the current dose is deemed as subtherapeutic and we exclude the current dose and lower doses;
+### Dose elimination
 
-2. If $\hat{\pi}_j > \phi$ the current dose is overly toxic and we exclude the current dose and higher doses.
+For patient safety and trial efficiency, the PoP design employs a dose elimination rule. If the PrBF based on the observed $y_j$ indicates a dose is above the MTD with a certain evidence, we exclude the current dose and doses above to avoid treating patients at overly toxic doses; alternatively, if the PrBF implies that a dose is substantially below the MTD, we eliminate the current dose and doses below to prevent patients from receiving subtherapeutic doses. Such a dose elimination rule is as follow:
 
-Once all the doses are eliminated from further investigation, the trial is terminated early. The selection of the cut-off value for the dose exclusion is critical for the performance of the PoP design, because it ensure the safety of the patients and efficiency of the design by influencing the early termination rule. The exclusion boundaries in the table above were determined using $E(n_j)=exp(-1)$.
+If $\text{PrBF}_{0,1}<E(\phi, n_j)$, the evidence is $\textit{strongly}$ in favor of $H_{1j}$ and:
 
+* If $y_j<\phi \cdot n_j$, the current dose is deemed as subtherapeutic and we exclude the current dose and lower doses;
+
+* If $y_j>\phi \cdot n_j$, the current dose is overly toxic and we exclude the current dose and higher doses.
+
+Once all the doses are eliminated from further investigation, the trial is terminated early. The selection of the threshold $E(\phi, n_j)$ is critical for the PoP design, because it ensures the safety of the patients and efficiency of the design by influencing the early termination rule. The plot() output of the get.boundary.pop results demonstrates the process of the PoP design to conduct a trial.
+
+### Theoretical properties
+
+Compared to other model-assisted design, PoPdesign possesses these three theoretical properties:
+
+$\textit{Theorem 1: Global optimality}$:
+
+The proposed dose transition rules for PoP design minimizes the risk of incorrect decision of dose assignment under the Bayesian decision framework.
+
+$\textit{Theorem 2: Long-term coherence}$:
+
+The probability of dose escalation (or de-escalation) is zero when the observed toxicity rate $\hat{\pi}_j$ at the current dose is higher (or lower) than the target toxicity rate $\phi$.
+
+$\textit{Theorem 3: Consistency}$:
+
+Dose allocation based on the escalation and de-escalation boundaries in the PoP design converges almost surely to dose level $j^*$ if $\exists j^*$, s.t. $\pi_{j^*}=\phi$. 
+
+$\textit{Global optimality}$: and $\textit{Consistency}$ are two unique properties of the PoP design.
 
 ## Installation
 
@@ -72,7 +107,7 @@ library(PoPdesign)
 
 ## Obtaining dose escalation and de-escalation boundaries
 
-By specifying the number of cohorts (n.cohort), cohort size and the target DLT rate (target), we can obtain the dose escalation and de-escalation boundaries through the get.boundary.pop() function.
+By specifying the number of cohorts (n.cohort), cohort size and the target DLT rate (target), we can obtain the dose escalation and de-escalation boundaries through the get.boundary.pop() function. The more completed version of the decision boundaries gives a flexible choice when the patient enrollment cannot strictly stick to the cohortsize. 
 
 ```{r}
 bd <-  get.boundary.pop(n.cohort = 10, cohortsize = 3, target=0.3, 
