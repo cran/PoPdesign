@@ -45,15 +45,9 @@ $$
 y_j\sim\text{Bin}(n_j,\pi_j)
 $$
 
-The predictive Bayes factor comparing $H_{0j}$ and $H_{1j}$ is given by:
-
-$$
-PrBF_{0,1}=\frac{\phi^{y_i}(1-\phi)^{n_j-y_j}B(y_j+1,n_j-y_j+1)^{n_j}exp(1)}{B(y_j+2,n_j-y_j+1)^{y_j}B(y_j+1,n_j-y_j+2)^{n_j-y_j}}
-$$
-where $B(a,b)$ is the beta function. $x_j$ is the toxicity response of the ith subject among $n_j$ subjects that received dose $d_j$, for $j=1,2,\ldots,J$. According to the calibration of the PrBF, the smaller the value of $\text{PrBF}_{0,1}$ ($<1$), the stronger the evidence favors $H_{1j}$ for dose transition, against $H_{0j}$ for dose retention. 
+We apply the predictive Bayes factor (prBF) for dose transition.
 
 ### Dose transition
-
 If $\text{PrBF}_{0,1}<C(\phi,n_j)$, the evidence is in favor of $H_{1j}$. We are going to transit the current dose. We assign the next cohort of patients to an adjacent dose according to $y_j$, such as
 
 * If $y_j<\phi \cdot n_j$, we escalate the dose;

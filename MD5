@@ -1,4 +1,4 @@
-fff825e4b0bb30e1386fdef79d2a16db *DESCRIPTION
+8017923d9ba7c20694b6fcad4e9a4417 *DESCRIPTION
 9e89cd92b2b6ae5712e3772493a12158 *NAMESPACE
 5d5ae37dec8bd36bf9fdb2ecf3b95239 *R/bound.R
 e5cd0ea7e05e2f98179662cac71be96b *R/get.boundary.pop.R
@@ -15,12 +15,12 @@ e96e9e915a83ff3137dc6967c29973dd *inst/Flowchart/PoP_Flowchart.Rmd
 bac6ea7acb17a4be141609fe04d4d358 *inst/Flowchart/PoP_Flowchart_scaled.png
 bd4fc5e25a230c7df45ccfa0abfd4019 *inst/Flowchart/PoP_flowchart.png
 4ecacd176368918bf1d1f034d689001e *inst/doc/vignette_for_PoP_design.R
-0e37597fe0efba731063922530023eb8 *inst/doc/vignette_for_PoP_design.Rmd
-8d1b38922024378922d76a90f92448d2 *inst/doc/vignette_for_PoP_design.html
+05d380ae027c91e6fe39ca9b3d1f2ee0 *inst/doc/vignette_for_PoP_design.Rmd
+02f1819ad1095522a7a4b76b6d898f41 *inst/doc/vignette_for_PoP_design.html
 37314bb1b4409f8795d9a40b19cfb05a *man/get.boundary.pop.Rd
 1c4f6e5d5efd3658b24564d17140b262 *man/get.oc.pop.Rd
 f850e9e8c4a388b8cfa286f7b108e1b5 *man/plot.pop.Rd
 4aef3c72450d8dc2a41379303643fc17 *man/print.pop.Rd
 83d9ba0e920d4fea7c60fa76af479176 *man/select.mtd.pop.Rd
 1101ecad9815a3b6332976f1a51efe1c *man/summary.pop.Rd
-0e37597fe0efba731063922530023eb8 *vignettes/vignette_for_PoP_design.Rmd
+05d380ae027c91e6fe39ca9b3d1f2ee0 *vignettes/vignette_for_PoP_design.Rmd

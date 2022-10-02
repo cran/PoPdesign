@@ -1,7 +1,7 @@
 Package: PoPdesign
 Type: Package
 Title: Posterior Predictive (PoP) Design for Phase I Clinical Trials
-Version: 1.0.2
+Version: 1.0.3
 Authors@R: c(person(given = "Chenqi",
                      family = "Fu",
                      role = "aut"),
@@ -21,9 +21,9 @@ RoxygenNote: 7.2.1
 VignetteBuilder: knitr
 Suggests: rmarkdown
 NeedsCompilation: no
-Packaged: 2022-09-29 14:12:00 UTC; rrrrrita
+Packaged: 2022-10-01 12:18:42 UTC; rrrrrita
 Author: Chenqi Fu [aut],
   Xinying Fang [aut, cre],
   Shouhao Zhou [aut]
 Repository: CRAN
-Date/Publication: 2022-09-29 16:40:05 UTC
+Date/Publication: 2022-10-02 21:00:02 UTC
