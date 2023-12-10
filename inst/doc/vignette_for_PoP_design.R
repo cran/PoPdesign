@@ -1,16 +1,24 @@
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 
+## ----echo=FALSE---------------------------------------------------------------
+Sys.setenv("OMP_THREAD_LIMIT" = 2)
+
 ## ----setup--------------------------------------------------------------------
 # install.packages("PoPdesign")
 library(PoPdesign)
 
-## -----------------------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 bd <-  get.boundary.pop(n.cohort = 10, cohortsize = 3, target=0.3, 
-                        cutoff=exp(1), K=3,cutoff_e=exp(-1))
+                        cutoff=2.5, K=3,cutoff_e=5/24)
+
+## ----include=FALSE------------------------------------------------------------
+bd = readRDS(system.file("temp_results", "bd.rds", package = "PoPdesign"))
+
+## -----------------------------------------------------------------------------
 summary(bd)
 
 ## -----------------------------------------------------------------------------
@@ -21,20 +29,30 @@ link = system.file("Flowchart", "PoP_flowchart.png", package = "PoPdesign")
 knitr::include_graphics(link)
 
 
-## -----------------------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 oc <- get.oc.pop(target=0.3,n.cohort=10,cohortsize=3,titration=TRUE,
-                 cutoff=TRUE,cutoff_e=exp(-1),
+                 cutoff=2.5,cutoff_e=5/24,
                  skeleton=c(0.3,0.4,0.5,0.6),n.trial=1000,
                      risk.cutoff=0.8,earlyterm=TRUE,start=1)
 
-summary(oc) # summarize design operating characteristics
-plot(oc)
+## ----include=FALSE------------------------------------------------------------
+oc = readRDS(system.file("temp_results", "oc.rds", package = "PoPdesign"))
 
 ## -----------------------------------------------------------------------------
+summary(oc) # summarize design operating characteristics
+
+## -----------------------------------------------------------------------------
+plot(oc)
+
+## ----echo=FALSE---------------------------------------------------------------
 n <- c(4, 4, 16, 8, 0) 
 y <- c(0, 0, 5, 5, 0)
 selmtd <- select.mtd.pop(target = 0.2, n.pts=n, n.tox=y)
+
+## ----include=FALSE------------------------------------------------------------
+selmtd = readRDS(system.file("temp_results", "selmtd.rds", package = "PoPdesign"))
+
+## -----------------------------------------------------------------------------
 summary(selmtd)
 plot(selmtd) 
-
 

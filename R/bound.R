@@ -1,4 +1,4 @@
-bound <- function(target,n.cohort,cohortsize,cutoff,K,cutoff_e=exp(-1)){
+bound <- function(target,n.cohort,cohortsize,cutoff,K,cutoff_e=5/24){
 
   f <- function(n,x){
     ((n+2)*x/(n*x+1))^(n*x)
@@ -18,6 +18,7 @@ bound <- function(target,n.cohort,cohortsize,cutoff,K,cutoff_e=exp(-1)){
     a <- 0
 
     if (cutoff){cutoff2 <- cut5(t=t,target=target, n=n.cohort*cohortsize, K=K)}
+    # either cutoff is a numeric (default = 2.5), or provide b1 b2 b3 to calculate.
     if (is.numeric(cutoff)==TRUE){cutoff2 <- cutoff}
 
     for(j in 1:length(x)){

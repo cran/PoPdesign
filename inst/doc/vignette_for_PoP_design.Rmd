@@ -14,6 +14,11 @@ knitr::opts_chunk$set(
 )
 ```
 
+```{r echo=FALSE}
+Sys.setenv("OMP_THREAD_LIMIT" = 2)
+```
+
+
 ## Introduction
 
 Model-assisted designs are cutting-edge adaptive designs to find the maximum tolerated dose (MTD) in phase I clinical trials. They enjoy superior performance comparable to more complicated, model-based adaptive designs, but with their decision rule pretabulated, they can be implemented as simply as the conventional algorithmic designs. In this work, we propose the posterior predictive (PoP) design, a novel model-assisted design to exploit Bayesian interval hypothesis testing, and develop a freely accessible R package **PoPdesign** to better facilitate the trial design application. Our work moves beyond the previous model-assisted designs by theoretically achieving consistency in selecting the true MTD and global optimality in dose transition. The simulation studies demonstrate that the PoP design can achieve significant improvement in operating characteristics to identify the MTD. Therefore, the PoP design provides a useful and convenient upgrade to the prevalent model-assisted designs.
@@ -103,11 +108,19 @@ library(PoPdesign)
 
 By specifying the number of cohorts (n.cohort), cohort size and the target DLT rate (target), we can obtain the dose escalation and de-escalation boundaries through the get.boundary.pop() function. The more completed version of the decision boundaries gives a flexible choice when the patient enrollment cannot strictly stick to the cohortsize. 
 
-```{r}
+```{r echo=FALSE}
 bd <-  get.boundary.pop(n.cohort = 10, cohortsize = 3, target=0.3, 
-                        cutoff=exp(1), K=3,cutoff_e=exp(-1))
+                        cutoff=2.5, K=3,cutoff_e=5/24)
+```
+
+```{r include=FALSE}
+bd = readRDS(system.file("temp_results", "bd.rds", package = "PoPdesign"))
+```
+
+```{r}
 summary(bd)
 ```
+
 
 The plot() output includes one flowchart along with the dose escalation/de-escalation table. The flowchart provides detailed information on how to conduct the PoP design. To open the flowchart, please extend the image Viewer window.
 
@@ -122,18 +135,36 @@ knitr::include_graphics(link)
 ```
 
 
+## Set self-determined cutoffs
+The decision boundaries of dose transition ($C$) and elimination ($E$) can be determined based on different risk settings by: 
+$$
+C = \frac{b_2-b_3}{b_1} \\
+E = \frac{b_3}{1-b_1}
+$$
+where $b_1$ is the risk for transiting the current dose level when the current dose level is MTD ($H_0$ is true). $b_2, b_3$ are risks for retaining and transiting the current dose level when the dose level is not MTD. 
+We recommend setting $b_1 \in [0.2,0.3], b_2\in[0.5,0.75]$. $b_3$ is recommended to be set as $\frac{1}{4}b_4$ to improve the efficiency of dose transition. It is demonstrated that the PoP design is not very sensitive to the choice of $b_1$, $b_2$ and $b_3$ for practical implementation with a small sample size. When the sample size is moderate or large, the loss scores will have less impact owing to the guaranteed convergence to the MTD.
 
 ## Simulate operative characteristics
 
 The function get.oc.pop() can be used to obtain the operating characteristics of the PoP design.
 
-```{r}
+```{r echo=FALSE}
 oc <- get.oc.pop(target=0.3,n.cohort=10,cohortsize=3,titration=TRUE,
-                 cutoff=TRUE,cutoff_e=exp(-1),
+                 cutoff=2.5,cutoff_e=5/24,
                  skeleton=c(0.3,0.4,0.5,0.6),n.trial=1000,
                      risk.cutoff=0.8,earlyterm=TRUE,start=1)
+```
 
+```{r include=FALSE}
+oc = readRDS(system.file("temp_results", "oc.rds", package = "PoPdesign"))
+```
+
+
+```{r}
 summary(oc) # summarize design operating characteristics
+```
+
+```{r}
 plot(oc)
 ```
 
@@ -142,12 +173,19 @@ plot(oc)
 
 When the trial is completed, we can choose the MTD with observed data by select.mtd.pop().
 
-```{r}
+```{r echo=FALSE}
 n <- c(4, 4, 16, 8, 0) 
 y <- c(0, 0, 5, 5, 0)
 selmtd <- select.mtd.pop(target = 0.2, n.pts=n, n.tox=y)
+```
+
+```{r include=FALSE}
+selmtd = readRDS(system.file("temp_results", "selmtd.rds", package = "PoPdesign"))
+```
+
+
+```{r}
 summary(selmtd)
 plot(selmtd) 
-
 ```
 

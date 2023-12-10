@@ -9,7 +9,7 @@
 #' @param n.cohort the total number of cohorts
 #' @param cohortsize the cohort size
 #' @param cutoff the cutoff for the predictive Bayes Factor (PrBF). Users can specify either a value or a function
-#'               for cutoff. If cutoff=TRUE, then a function defined by the package will be applied as cutoff. If PrBF < cutoff, we assign the next cohort of patients to an adjacent dose based on observed DLT.
+#'               for cutoff. If PrBF < cutoff, we assign the next cohort of patients to an adjacent dose based on observed DLT.
 #'               Otherwise, the evidence is in favor of \eqn{H_{0j}} and we need to retain the current dose.
 #' @param K number of dose levels. It is required when argument cutoff is a function that requires K.
 #' @param cutoff_e the cutoff for the dose exclusion rule. If \eqn{PrBF_{0,1}<E(n_j)}, the evidence is in favor of \eqn{H_{1j}}. If \eqn{\hat{\pi}_j < \phi},
@@ -68,20 +68,19 @@
 #' @return  \code{get.boundary.pop()} returns a list object, including the corresponding decision tables
 #'          \code{$out.boundary} and \code{$out.full.boundary}.
 #'
-#'
 #' @examples
 #'
 #' ## get the dose escalation and deescalation boundaries for PoP design with
 #' ## the target DLT rate of 0.3, maximum sample size of 30, and cohort size of 3
 #' bound <- get.boundary.pop(target=0.5, n.cohort = 10, cohortsize = 3,
-#'                           cutoff=TRUE,K=4,cutoff_e=exp(-1))
+#'                           cutoff=2.5,K=4,cutoff_e=5/24)
 #' summary(bound) # get the descriptive summary of the boundary
 #' plot(bound)    # plot the flowchart of the design along with decision boundaries
 #'
 #' @import stats
 #' @export
 
-get.boundary.pop = function(target,n.cohort,cohortsize,cutoff=TRUE,K=4,cutoff_e=exp(-1)){
+get.boundary.pop = function(target,n.cohort,cohortsize,cutoff=2.5,K=4,cutoff_e=5/24){
 
   if (target < 0.05) {
     stop("the target is too low! ")

@@ -5,7 +5,7 @@
 \title{Operating characteristics for single-agent trials}
 \usage{
 get.oc.pop(target,n.cohort,cohortsize,titration,skeleton,n.trial,cutoff,cutoff_e,
-                     risk.cutoff,earlyterm,start)
+                     risk.cutoff,earlyterm,start,seed)
 }
 \arguments{
 \item{target}{the target DLT rate}
@@ -24,7 +24,7 @@ investigational dose levels.}
 \item{n.trial}{the total number of trials to be simulated}
 
 \item{cutoff}{the cutoff for the predictive Bayes Factor (PrBF). Users can specify either a value or a function
-for cutoff. If cutoff=TRUE, then a function defined by the package will be applied as cutoff. If PrBF < cutoff, we assign the next cohort of patients to an adjacent dose based on observed DLT.
+for cutoff. If PrBF < cutoff, we assign the next cohort of patients to an adjacent dose based on observed DLT.
 Otherwise, the evidence is in favor of \eqn{H_{0j}} and we need to retain the current dose.}
 
 \item{cutoff_e}{the cutoff for the dose exclusion rule. If \eqn{PrBF_{0,1}<E(n_j)}, the evidence is in favor of \eqn{H_{1j}}. If \eqn{\hat{\pi}_j < \phi},
@@ -37,6 +37,8 @@ We recommend the default value of (\code{risk.cutoff=0.8}) for general use.}
 \item{earlyterm}{the early termination parameter.}
 
 \item{start}{specify the starting dose level. Default value is 1.}
+
+\item{seed}{the seed for random number generation. Default is 123.}
 }
 \value{
 \code{get.oc.pop()} returns the operating characteristics of the PoP design as a list,
@@ -68,9 +70,9 @@ TBD
 
 ## get the operating characteristics for single-agent trials
 oc <- get.oc.pop(target=0.3,n.cohort=10,cohortsize=3,titration=TRUE,
-                 cutoff=TRUE,cutoff_e=exp(-1),
+                 cutoff=2.5,cutoff_e=5/24,
                  skeleton=c(0.3,0.4,0.5,0.6),n.trial=1000,
-                     risk.cutoff=0.8,earlyterm=TRUE,start=1)
+                     risk.cutoff=0.8,earlyterm=TRUE,start=1, seed=123)
 
 summary(oc) # summarize design operating characteristics
 plot(oc)
