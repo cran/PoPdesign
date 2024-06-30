@@ -3,10 +3,10 @@
 #'
 #' Use this function to generate the dose escalation and deescalation boundaries for single-agent trials.
 #'
-#' @usage get.boundary.pop(target, n.cohort, cohortsize, cutoff, K, cutoff_e)
+#' @usage get.boundary.pop(target, n, cohortsize, cutoff, K, cutoff_e)
 #'
 #' @param target the target DLT rate
-#' @param n.cohort the total number of cohorts
+#' @param n total sample size
 #' @param cohortsize the cohort size
 #' @param cutoff the cutoff for the predictive Bayes Factor (PrBF). Users can specify either a value or a function
 #'               for cutoff. If PrBF < cutoff, we assign the next cohort of patients to an adjacent dose based on observed DLT.
@@ -72,7 +72,7 @@
 #'
 #' ## get the dose escalation and deescalation boundaries for PoP design with
 #' ## the target DLT rate of 0.3, maximum sample size of 30, and cohort size of 3
-#' bound <- get.boundary.pop(target=0.5, n.cohort = 10, cohortsize = 3,
+#' bound <- get.boundary.pop(target=0.5, n = 15, cohortsize = 3,
 #'                           cutoff=2.5,K=4,cutoff_e=5/24)
 #' summary(bound) # get the descriptive summary of the boundary
 #' plot(bound)    # plot the flowchart of the design along with decision boundaries
@@ -80,7 +80,8 @@
 #' @import stats
 #' @export
 
-get.boundary.pop = function(target,n.cohort,cohortsize,cutoff=2.5,K=4,cutoff_e=5/24){
+
+get.boundary.pop = function(target,n,cohortsize,cutoff=2.5,K=4,cutoff_e=5/24){
 
   if (target < 0.05) {
     stop("the target is too low! ")
@@ -89,11 +90,14 @@ get.boundary.pop = function(target,n.cohort,cohortsize,cutoff=2.5,K=4,cutoff_e=5
     stop("the target is too high!")
   }
 
+  n.cohort <- n/cohortsize
+  if (n.cohort%%1){
+    stop("The total sample size is not a multiple of cohort size!")
+  }
   out.boundary <- rbind(cohortsize * (1:n.cohort),
                         bound(target=target,n.cohort=n.cohort,cohortsize = cohortsize,cutoff=cutoff,K=K,cutoff_e=cutoff_e))
-  total = n.cohort*cohortsize
-  out.full.boundary <- rbind(1:total,
-                             bound(target=target,n.cohort=total,cohortsize = 1,cutoff=cutoff,K=K,cutoff_e=cutoff_e))
+  out.full.boundary <- rbind(1:n,
+                             bound(target=target,n.cohort=n,cohortsize = 1,cutoff=cutoff,K=K,cutoff_e=cutoff_e))
 
   rownames(out.boundary) <- c("Number of patients treated",
                               "Escalation if # of DLT (U1) <=","Deescalation if # of DLT (U2) >=",
@@ -102,14 +106,13 @@ get.boundary.pop = function(target,n.cohort,cohortsize,cutoff=2.5,K=4,cutoff_e=5
 
   rownames(out.full.boundary) <- c("Number of patients treated",
                                    "Escalation if # of DLT (U1) <=","Deescalation if # of DLT (U2) >=",
-                              "Subtherapeutic exclusion if # of DLT (V1) <=",
-                              "Overly toxic exclusion if # of DLT (V2) >=")
+                                   "Subtherapeutic exclusion if # of DLT (V1) <=",
+                                   "Overly toxic exclusion if # of DLT (V2) >=")
 
   out = list(out.boundary = out.boundary,
              out.full.boundary = out.full.boundary)
   class(out)<-"pop"
   return(out)
 }
-
 
 

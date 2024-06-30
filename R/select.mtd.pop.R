@@ -30,46 +30,55 @@
 
 select.mtd.pop <- function(target, n.pts, n.tox){
 
-  fit.isoreg <- function(iso, x0)
-  {
-    if(length(x0)==1){
-      return(iso$yf)
+  pava <- function(x, wt = rep(1, length(x))) {
+    n <- length(x)
+    if (n <= 1)
+      return(x)
+    if (any(is.na(x)) || any(is.na(wt))) {
+      stop("Missing values in 'x' or 'wt' not allowed")
     }
-    o = iso$o
-    if (is.null(o))
-      o = 1:length(x0)
-    x = unique(iso$x[o])
-    y = iso$yf
-    ind = cut(x0, breaks = x, labels = FALSE, include.lowest = TRUE)
-    min.x <- min(x)
-    max.x <- max(x)
-    adjusted.knots <- iso$iKnots[c(which(iso$yf[iso$iKnots] > 0))]
-    fits = sapply(seq(along = x0), function(i) {
-      j = ind[i]
-
-      # Find the upper and lower parts of the step
-      upper.step.n <- min(which(adjusted.knots > j))
-      upper.step <- adjusted.knots[upper.step.n]
-      lower.step <- ifelse(upper.step.n==1, 1, adjusted.knots[upper.step.n -1] )
-
-      # Perform a liner interpolation between the start and end of the step
-      denom <- x[upper.step] - x[lower.step]
-      denom <- ifelse(denom == 0, 1, denom)
-      val <- y[lower.step] + (y[upper.step] - y[lower.step]) * (x0[i] - x[lower.step]) / (denom)
-    })
-    fits
+    lvlsets <- (1:n)
+    repeat {
+      viol <- (as.vector(diff(x)) < 0)
+      if (!(any(viol)))
+        break
+      i <- min((1:(n - 1))[viol])
+      lvl1 <- lvlsets[i]
+      lvl2 <- lvlsets[i + 1]
+      ilvl <- (lvlsets == lvl1 | lvlsets == lvl2)
+      x[ilvl] <- sum(x[ilvl] * wt[ilvl])/sum(wt[ilvl])
+      lvlsets[ilvl] <- lvl1
+    }
+    x
   }
 
   l <- which(n.pts>0)
-  p <- n.tox[l]/n.pts[l]
-  if(sum(p)==0){
-    return(max(l))
+  p <- (n.tox[l]+0.05)/(n.pts[l]+0.1)
+  p.var = (n.tox[l] + 0.05) * (n.pts[l] - n.tox[l] + 0.05)/((n.pts[l] +
+                                                               0.1)^2 * (n.pts[l] + 0.1 + 1))
+  p.iso <- pava(p, wt = 1/p.var)
+  p.iso = p.iso + (1:length(p.iso)) * 1e-10
+
+  ## eliminate dose based on posterior probability
+  K = length(n.pts)
+  elimi = rep(0, K)
+  for (i in 1:K) {
+    if (1 - pbeta(target, n.tox[i] + 1, n.pts[i] - n.tox[i] + 1) > 0.95) {
+      elimi[i:K] = 1
+      break
+    }
   }
-  iso.model <- isoreg(p)
-  p.iso <- fit.isoreg(iso.model,1:length(l))
+  m <- which(elimi!=1)
+
+  l <- l[m]
+  p.iso <- p.iso[m]
+  if(length(l)==0) {return(99)}
+  # l[sort(abs(p.iso - target), index.return = T)$ix[1]]
+
   d <- abs(p.iso-target)
   mtd <- l[max(which(d==min(d)))]
   p_est <- p.iso
+
   out <- list(target = target,
               MTD = mtd,
               p_est = p_est)

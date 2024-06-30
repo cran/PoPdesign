@@ -4,12 +4,12 @@
 \alias{get.boundary.pop}
 \title{Generate the dose escalation and de-escalation boundaries for single-agent trials.}
 \usage{
-get.boundary.pop(target, n.cohort, cohortsize, cutoff, K, cutoff_e)
+get.boundary.pop(target, n, cohortsize, cutoff, K, cutoff_e)
 }
 \arguments{
 \item{target}{the target DLT rate}
 
-\item{n.cohort}{the total number of cohorts}
+\item{n}{total sample size}
 
 \item{cohortsize}{the cohort size}
 
@@ -83,7 +83,7 @@ We assume that there are \eqn{J} pre-specified dose levels of the drug of intere
 
 ## get the dose escalation and deescalation boundaries for PoP design with
 ## the target DLT rate of 0.3, maximum sample size of 30, and cohort size of 3
-bound <- get.boundary.pop(target=0.5, n.cohort = 10, cohortsize = 3,
+bound <- get.boundary.pop(target=0.5, n = 15, cohortsize = 3,
                           cutoff=2.5,K=4,cutoff_e=5/24)
 summary(bound) # get the descriptive summary of the boundary
 plot(bound)    # plot the flowchart of the design along with decision boundaries

@@ -19,12 +19,12 @@ Generate descriptive summary for objects returned by other functions.
 }
 \examples{
 ## summarize the results returned by get.boundary.pop()
-bound <- get.boundary.pop(n.cohort = 10, cohortsize = 3, target=0.3,
+bound <- get.boundary.pop(n = 15, cohortsize = 3, target=0.3,
                           cutoff=exp(1), K=3,cutoff_e=exp(-1))
 summary(bound)
 
 ## summarize the results returned by get.oc.pop()
-oc <- get.oc.pop(target=0.3,n.cohort=10,cohortsize=3,titration=TRUE,
+oc <- get.oc.pop(target=0.3,n=15,cohortsize=3,titration=TRUE,
                  cutoff=TRUE,cutoff_e=exp(-1),skeleton=c(0.3,0.4,0.5,0.6),n.trial=1000,
                  risk.cutoff=0.8,earlyterm=TRUE,start=1)
 summary(oc)

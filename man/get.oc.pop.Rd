@@ -4,13 +4,13 @@
 \alias{get.oc.pop}
 \title{Operating characteristics for single-agent trials}
 \usage{
-get.oc.pop(target,n.cohort,cohortsize,titration,skeleton,n.trial,cutoff,cutoff_e,
+get.oc.pop(target,n,cohortsize,titration,skeleton,n.trial,cutoff,cutoff_e,
                      risk.cutoff,earlyterm,start,seed)
 }
 \arguments{
 \item{target}{the target DLT rate}
 
-\item{n.cohort}{the total number of cohorts}
+\item{n}{total sample size}
 
 \item{cohortsize}{the cohort size}
 
@@ -69,7 +69,7 @@ TBD
 \examples{
 
 ## get the operating characteristics for single-agent trials
-oc <- get.oc.pop(target=0.3,n.cohort=10,cohortsize=3,titration=TRUE,
+oc <- get.oc.pop(target=0.3,n=15,cohortsize=3,titration=TRUE,
                  cutoff=2.5,cutoff_e=5/24,
                  skeleton=c(0.3,0.4,0.5,0.6),n.trial=1000,
                      risk.cutoff=0.8,earlyterm=TRUE,start=1, seed=123)
